@@ -4,6 +4,7 @@ import { createSupabaseClient } from '../lib/supabase'
 
 export default function AuthCheck() {
   const [user, setUser] = useState(null)
+  const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
 
@@ -17,6 +18,17 @@ export default function AuthCheck() {
     const checkAuth = async () => {
       const supabase = createSupabaseClient()
       const { data: { user } } = await supabase.auth.getUser()
+      
+      if (user) {
+        // Fetch profile data from our profiles table
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', user.id)
+          .single()
+        setProfile(profile)
+      }
+      
       setUser(user)
       setLoading(false)
     }
@@ -32,7 +44,14 @@ export default function AuthCheck() {
         <div>
           <h1>Welcome, {user.email}</h1>
           <button onClick={handleLogout}>Logout</button>
-          <pre>{JSON.stringify(user, null, 2)}</pre>
+          {profile && (
+            <div>
+              <h2>Profile</h2>
+              <p>Username: {profile.username}</p>
+              <p>Full Name: {profile.full_name}</p>
+              <p>Role: {profile.role}</p>
+            </div>
+          )}
         </div>
       ) : (
         <div>

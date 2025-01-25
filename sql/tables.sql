@@ -5,7 +5,7 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 -- Create custom types
 CREATE TYPE user_role AS ENUM ('user', 'admin', 'moderator');
 
--- Create users table (extends Supabase auth.users)
+-- Create profiles table (if not already there)
 CREATE TABLE IF NOT EXISTS public.profiles (
     id UUID REFERENCES auth.users(id) PRIMARY KEY,
     username TEXT UNIQUE NOT NULL,
