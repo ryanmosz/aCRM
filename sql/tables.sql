@@ -2,8 +2,14 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
--- Create custom types
-CREATE TYPE user_role AS ENUM ('user', 'admin', 'moderator');
+-- Create custom types if they don't exist
+DO $$ 
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'user_role') THEN
+    CREATE TYPE user_role AS ENUM ('user', 'admin', 'moderator');
+  END IF;
+END
+$$;
 
 -- Create profiles table (if not already there)
 CREATE TABLE IF NOT EXISTS public.profiles (
