@@ -24,3 +24,6 @@ Thumbs.db
 .vscode/
 *.swp
 *.swo
+# SQL files
+sql/*.sql
+!sql/*.example.sql
